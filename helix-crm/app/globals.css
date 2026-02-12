@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@layer base {
+  * { @apply box-border; }
+  body {
+    @apply bg-ink text-white antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  ::selection {
+    @apply bg-helix-500/30 text-white;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+}
+
+@layer components {
+  .card {
+    @apply bg-panel border border-border rounded-xl p-6;
+  }
+  .btn-primary {
+    @apply bg-helix-500 hover:bg-helix-400 text-ink font-semibold px-5 py-2.5 rounded-lg transition-all duration-200 text-sm;
+  }
+  .btn-secondary {
+    @apply bg-surface hover:bg-panel border border-border text-white font-medium px-5 py-2.5 rounded-lg transition-all duration-200 text-sm;
+  }
+  .btn-ghost {
+    @apply hover:bg-panel text-subtle hover:text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 text-sm;
+  }
+  .input-field {
+    @apply bg-surface border border-border rounded-lg px-4 py-2.5 text-white placeholder-muted focus:outline-none focus:border-helix-500 focus:ring-1 focus:ring-helix-500/50 transition-all text-sm w-full;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-new { @apply bg-helix-500/15 text-helix-400 border border-helix-500/20; }
+  .badge-replied { @apply bg-amber-500/15 text-amber-400 border border-amber-500/20; }
+  .badge-optout { @apply bg-rose-500/15 text-rose-400 border border-rose-500/20; }
+  .badge-sent { @apply bg-blue-500/15 text-blue-400 border border-blue-500/20; }
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-subtle hover:text-white hover:bg-panel transition-all text-sm font-medium;
+  }
+  .sidebar-link.active {
+    @apply bg-helix-500/10 text-helix-400 border border-helix-500/10;
+  }
+  .stat-card {
+    @apply card flex flex-col gap-1;
+  }
+  .stat-value {
+    @apply text-3xl font-bold font-display tracking-tight;
+  }
+  .stat-label {
+    @apply text-sm text-muted;
+  }
+  .table-row {
+    @apply border-b border-border hover:bg-surface/50 transition-colors;
+  }
+}
