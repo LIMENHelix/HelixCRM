@@ -1,132 +1,158 @@
 // app/dashboard/page.tsx
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { Icons, Contact, Campaign, EmailThread } from '@/components/shared';
-import ContactsView from '@/components/ContactsView';
-import CampaignsView from '@/components/CampaignsView';
-import InboxView from '@/components/InboxView';
-import SettingsView from '@/components/SettingsView';
+import { useState, useEffect } from 'react';
+import PricingView from '@/components/PricingView';
+import InventoryView from '@/components/InventoryView';
+import CompetitorView from '@/components/CompetitorView';
+import { rvUnits } from '@/components/shared';
 
-type View = 'dashboard' | 'contacts' | 'campaigns' | 'inbox' | 'settings';
+type Tab = 'pricing' | 'inventory' | 'competitors';
+
+const tabs: { id: Tab; label: string }[] = [
+  { id: 'pricing', label: 'PRICING INTEL' },
+  { id: 'inventory', label: 'INVENTORY' },
+  { id: 'competitors', label: 'COMPETITORS' },
+];
+
+const tickerItems = [
+  'CLASS A AVG: $198,400 \u25B2 2.1%',
+  'CLASS B AVG: $97,800 \u25BC 0.8%',
+  'CLASS C AVG: $139,500 \u25B2 1.4%',
+  '5TH WHEEL AVG: $62,300 \u25BC 3.2%',
+  'TRAVEL TRAILER AVG: $41,200 \u25B2 0.5%',
+  'NATIONAL AVG DOM: 34 DAYS',
+  'ACTIVE LISTINGS: 142,847',
+  'NEW LISTINGS (7D): 3,291',
+  'PRICE DROPS (7D): 8,104',
+  'TX MARKET: $156,200 AVG',
+];
+
+const mockPhotoCounts: Record<number, number> = { 1: 8, 2: 12, 3: 4, 4: 3, 5: 10, 6: 6, 7: 11, 8: 5 };
+
+const needsAttentionCount = rvUnits.filter(u => u.daysOnMarket > 45).length;
+const belowMarketCount = rvUnits.filter(u => u.trend === 'below').length;
+const missingDataCount = rvUnits.filter(u => (mockPhotoCounts[u.id] || 5) < 5).length;
 
 export default function DashboardPage() {
-  const [view, setView] = useState<View>('dashboard');
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [threads, setThreads] = useState<EmailThread[]>([]);
-  const [settings, setSettings] = useState<any>({});
-  const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<Tab>('pricing');
+  const [username, setUsername] = useState('');
 
-  const fetchData = useCallback(async () => {
-    try {
-      const [cRes, campRes, tRes, sRes] = await Promise.all([
-        fetch('/api/contacts'), fetch('/api/campaigns'),
-        fetch('/api/gmail/inbox'), fetch('/api/settings'),
-      ]);
-      const [cData, campData, tData, sData] = await Promise.all([cRes.json(), campRes.json(), tRes.json(), sRes.json()]);
-      setContacts(cData.contacts || []);
-      setCampaigns(campData.campaigns || []);
-      setThreads(tData.threads || []);
-      setSettings(sData);
-    } catch (err) { console.error(err); }
-    setLoading(false);
+  useEffect(() => {
+    const user = localStorage.getItem('lotiq_user');
+    if (!user) {
+      window.location.href = '/';
+      return;
+    }
+    setUsername(user);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  const handleSignOut = () => {
+    localStorage.removeItem('lotiq_user');
+    window.location.href = '/';
+  };
 
-  const activeContacts = contacts.filter(c => c.status === 'active');
-  const newThreads = threads.filter(t => t.status === 'new');
-  const totalSent = campaigns.reduce((s, c) => s + c.sentCount, 0);
-
-  const navItems: { id: View; label: string; icon: any; badge?: number }[] = [
-    { id: 'dashboard', label: 'Dashboard', icon: Icons.Dashboard },
-    { id: 'contacts', label: 'Contacts', icon: Icons.Users, badge: contacts.length },
-    { id: 'campaigns', label: 'Campaigns', icon: Icons.Send },
-    { id: 'inbox', label: 'Inbox', icon: Icons.Inbox, badge: newThreads.length || undefined },
-    { id: 'settings', label: 'Settings', icon: Icons.Settings },
-  ];
+  if (!username) return null;
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <aside className="w-64 bg-surface border-r border-border flex flex-col">
-        <div className="p-5 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-helix-500 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-ink"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            </div>
-            <div><h1 className="text-sm font-semibold text-white leading-tight">HELIX CRM</h1><p className="text-xs text-muted">LIMEN Helix</p></div>
-          </div>
+    <div className="flex flex-col h-screen" style={{ background: '#080c10' }}>
+      {/* Ticker Bar */}
+      <div className="overflow-hidden whitespace-nowrap" style={{ background: '#0d1117', borderBottom: '1px solid #1e2d3d', height: '28px', lineHeight: '28px' }}>
+        <div className="inline-block animate-ticker">
+          {[...tickerItems, ...tickerItems].map((item, i) => (
+            <span key={i} className="text-xs font-mono mx-6" style={{ color: item.includes('\u25B2') ? '#00ff88' : item.includes('\u25BC') ? '#ff4444' : '#7a8fa6' }}>
+              {item}
+            </span>
+          ))}
         </div>
-        <nav className="flex-1 p-3 space-y-1">
-          {navItems.map(item => (
-            <button key={item.id} onClick={() => setView(item.id)} className={`sidebar-link w-full ${view === item.id ? 'active' : ''}`}>
-              <item.icon /><span className="flex-1 text-left">{item.label}</span>
-              {item.badge && item.badge > 0 && <span className="bg-helix-500/20 text-helix-400 text-xs font-semibold px-2 py-0.5 rounded-full">{item.badge}</span>}
+      </div>
+
+      {/* Header */}
+      <header className="flex items-center px-6 py-3 gap-4" style={{ background: '#0d1117', borderBottom: '1px solid #1e2d3d' }}>
+        {/* Logo */}
+        <div className="flex items-center gap-3 mr-4">
+          <div className="w-8 h-8 flex items-center justify-center" style={{ border: '2px solid #00d4ff', borderRadius: '4px' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M3 3h18v18H3z" />
+              <path d="M3 9h18" />
+              <path d="M9 3v18" />
+            </svg>
+          </div>
+          <span className="text-lg font-bold font-mono" style={{ color: '#00d4ff' }}>LotIQ</span>
+        </div>
+
+        {/* Alert Boxes */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setTab('inventory')}
+            className="flex items-center gap-2 px-3 py-1.5 transition-all"
+            style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.25)', borderRadius: '4px' }}
+            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,184,0,0.15)'}
+            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,184,0,0.08)'}
+          >
+            <span className="text-lg font-bold font-mono" style={{ color: '#ffb800' }}>{needsAttentionCount}</span>
+            <span className="text-xs font-mono uppercase" style={{ color: '#ffb800' }}>Needs Attention</span>
+          </button>
+          <button
+            onClick={() => setTab('pricing')}
+            className="flex items-center gap-2 px-3 py-1.5 transition-all"
+            style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.25)', borderRadius: '4px' }}
+            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(0,212,255,0.15)'}
+            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(0,212,255,0.08)'}
+          >
+            <span className="text-lg font-bold font-mono" style={{ color: '#00d4ff' }}>{belowMarketCount}</span>
+            <span className="text-xs font-mono uppercase" style={{ color: '#00d4ff' }}>Market Opportunities</span>
+          </button>
+          <button
+            onClick={() => setTab('inventory')}
+            className="flex items-center gap-2 px-3 py-1.5 transition-all"
+            style={{ background: 'rgba(255,68,68,0.08)', border: '1px solid rgba(255,68,68,0.25)', borderRadius: '4px' }}
+            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,68,68,0.15)'}
+            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,68,68,0.08)'}
+          >
+            <span className="text-lg font-bold font-mono" style={{ color: '#ff4444' }}>{missingDataCount}</span>
+            <span className="text-xs font-mono uppercase" style={{ color: '#ff4444' }}>Missing Data</span>
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <nav className="flex items-center gap-1 ml-auto mr-4">
+          {tabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className="px-4 py-1.5 text-xs font-mono font-semibold uppercase tracking-wider transition-all"
+              style={{
+                background: tab === t.id ? 'rgba(0,212,255,0.1)' : 'transparent',
+                color: tab === t.id ? '#00d4ff' : '#7a8fa6',
+                borderBottom: tab === t.id ? '2px solid #00d4ff' : '2px solid transparent',
+              }}
+            >
+              {t.label}
             </button>
           ))}
         </nav>
-        <div className="p-3 border-t border-border">
-          <button onClick={() => { localStorage.removeItem('helix-auth'); window.location.href = '/'; }} className="sidebar-link w-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
-            <Icons.Logout /><span>Sign Out</span>
+
+        {/* User + Sign Out */}
+        <div className="flex items-center gap-4">
+          <span className="text-xs font-mono" style={{ color: '#7a8fa6' }}>{username}</span>
+          <button
+            onClick={handleSignOut}
+            className="text-xs font-mono px-3 py-1 transition-all"
+            style={{ color: '#ff4444', border: '1px solid rgba(255,68,68,0.3)', borderRadius: '4px', background: 'transparent' }}
+            onMouseOver={e => (e.target as HTMLElement).style.background = 'rgba(255,68,68,0.1)'}
+            onMouseOut={e => (e.target as HTMLElement).style.background = 'transparent'}
+          >
+            SIGN OUT
           </button>
         </div>
-      </aside>
+      </header>
 
-      <main className="flex-1 overflow-y-auto bg-ink">
-        <div className="p-8 max-w-7xl mx-auto">
-          {loading ? (
-            <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-helix-500 border-t-transparent rounded-full animate-spin" /></div>
-          ) : (
-            <>
-              {view === 'dashboard' && (
-                <div className="animate-fade-in space-y-8">
-                  <div><h2 className="text-2xl font-display text-white mb-1">Dashboard</h2><p className="text-muted text-sm">Overview of your CRM activity</p></div>
-                  <div className="grid grid-cols-4 gap-5">
-                    <div className="stat-card"><span className="stat-value text-white">{contacts.length}</span><span className="stat-label">Total Contacts</span></div>
-                    <div className="stat-card"><span className="stat-value text-helix-400">{activeContacts.length}</span><span className="stat-label">Active</span></div>
-                    <div className="stat-card"><span className="stat-value text-amber-400">{newThreads.length}</span><span className="stat-label">Pending Replies</span></div>
-                    <div className="stat-card"><span className="stat-value text-white">{totalSent}</span><span className="stat-label">Emails Sent</span></div>
-                  </div>
-                  {newThreads.length > 0 && (
-                    <div className="card">
-                      <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-white">Pending Replies</h3><button onClick={() => setView('inbox')} className="text-helix-400 text-sm hover:underline">View All →</button></div>
-                      <div className="space-y-3">
-                        {newThreads.slice(0, 3).map(t => (
-                          <div key={t.id} className="flex items-start gap-4 p-3 rounded-lg bg-surface border border-border">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="font-medium text-white text-sm">{t.contactName}</span>
-                                {t.aiClassification && <span className={`badge ${t.aiClassification === 'hot-lead' ? 'badge-new' : t.aiClassification === 'opt-out' ? 'badge-optout' : 'badge-replied'}`}>{t.aiClassification}</span>}
-                              </div>
-                              <p className="text-subtle text-sm truncate">{t.lastMessage}</p>
-                            </div>
-                            <span className="text-xs text-muted whitespace-nowrap">{new Date(t.updatedAt).toLocaleDateString()}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div className="card">
-                    <div className="flex items-center justify-between mb-4"><h3 className="font-semibold text-white">Recent Campaigns</h3><button onClick={() => setView('campaigns')} className="text-helix-400 text-sm hover:underline">View All →</button></div>
-                    {campaigns.length === 0 ? <p className="text-muted text-sm">No campaigns yet.</p> : (
-                      <div className="space-y-3">
-                        {campaigns.slice(0, 3).map(c => (
-                          <div key={c.id} className="flex items-center justify-between p-3 rounded-lg bg-surface border border-border">
-                            <div><p className="font-medium text-white text-sm">{c.name}</p><p className="text-muted text-xs">{c.sentCount} sent · {c.replyCount} replies</p></div>
-                            <span className={`badge ${c.status === 'sent' ? 'badge-sent' : 'badge-replied'}`}>{c.status}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              {view === 'contacts' && <ContactsView contacts={contacts} onRefresh={fetchData} />}
-              {view === 'campaigns' && <CampaignsView campaigns={campaigns} contacts={contacts} onRefresh={fetchData} />}
-              {view === 'inbox' && <InboxView threads={threads} onRefresh={fetchData} />}
-              {view === 'settings' && <SettingsView settings={settings} onRefresh={fetchData} />}
-            </>
-          )}
+      {/* Content */}
+      <main className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-7xl mx-auto">
+          {tab === 'pricing' && <PricingView />}
+          {tab === 'inventory' && <InventoryView />}
+          {tab === 'competitors' && <CompetitorView />}
         </div>
       </main>
     </div>

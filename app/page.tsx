@@ -4,72 +4,85 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Demo: accept any credentials
-    if (email && password) {
-      localStorage.setItem('helix-auth', JSON.stringify({ email, name: email.split('@')[0] }));
+    if (username === 'demo' && password === 'demo123') {
+      localStorage.setItem('lotiq_user', username);
       router.push('/dashboard');
     } else {
-      setError('Enter email and password');
+      setError('Invalid credentials');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ink">
+    <div className="min-h-screen flex items-center justify-center" style={{ background: '#080c10' }}>
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-helix-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-helix-500/3 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl" style={{ background: 'rgba(0,212,255,0.03)' }} />
+        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full blur-3xl" style={{ background: 'rgba(0,212,255,0.02)' }} />
       </div>
 
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-helix-500 flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="text-ink">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 flex items-center justify-center" style={{ border: '2px solid #00d4ff', borderRadius: '4px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M3 3h18v18H3z" />
+                <path d="M3 9h18" />
+                <path d="M9 3v18" />
               </svg>
             </div>
-            <span className="text-2xl font-display text-white tracking-tight">HELIX CRM</span>
+            <span className="text-3xl font-bold tracking-tight font-mono" style={{ color: '#00d4ff' }}>LotIQ</span>
           </div>
-          <p className="text-muted text-sm">AI-Powered Email Automation</p>
+          <p className="text-sm font-mono" style={{ color: '#7a8fa6' }}>RV Market Intelligence Platform</p>
         </div>
 
-        <form onSubmit={handleLogin} className="card space-y-5">
-          <div>
-            <label className="block text-sm text-subtle mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="input-field"
-              placeholder="you@limenhelix.com"
-            />
+        <form onSubmit={handleLogin} style={{ background: '#0d1117', border: '1px solid #1e2d3d', borderRadius: '4px', padding: '32px' }}>
+          <div className="space-y-5">
+            <div>
+              <label className="block text-xs font-mono mb-1.5 uppercase tracking-wider" style={{ color: '#7a8fa6' }}>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                className="w-full px-4 py-2.5 text-sm font-sans outline-none transition-all"
+                style={{ background: '#080c10', border: '1px solid #1e2d3d', borderRadius: '4px', color: '#c9d4e0' }}
+                onFocus={e => e.target.style.borderColor = '#00d4ff'}
+                onBlur={e => e.target.style.borderColor = '#1e2d3d'}
+                placeholder="Enter username"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono mb-1.5 uppercase tracking-wider" style={{ color: '#7a8fa6' }}>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full px-4 py-2.5 text-sm font-sans outline-none transition-all"
+                style={{ background: '#080c10', border: '1px solid #1e2d3d', borderRadius: '4px', color: '#c9d4e0' }}
+                onFocus={e => e.target.style.borderColor = '#00d4ff'}
+                onBlur={e => e.target.style.borderColor = '#1e2d3d'}
+                placeholder="Enter password"
+              />
+            </div>
+            {error && <p className="text-sm font-mono" style={{ color: '#ff4444' }}>{error}</p>}
+            <button
+              type="submit"
+              className="w-full py-2.5 text-sm font-semibold font-mono uppercase tracking-wider transition-all"
+              style={{ background: '#00d4ff', color: '#080c10', borderRadius: '4px', border: 'none' }}
+              onMouseOver={e => (e.target as HTMLElement).style.background = '#33ddff'}
+              onMouseOut={e => (e.target as HTMLElement).style.background = '#00d4ff'}
+            >
+              Sign In
+            </button>
+            <p className="text-center text-xs font-mono" style={{ color: '#7a8fa6' }}>
+              demo / demo123
+            </p>
           </div>
-          <div>
-            <label className="block text-sm text-subtle mb-1.5">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="input-field"
-              placeholder="••••••••"
-            />
-          </div>
-          {error && <p className="text-rose-400 text-sm">{error}</p>}
-          <button type="submit" className="btn-primary w-full">
-            Sign In
-          </button>
-          <p className="text-center text-xs text-muted">
-            Demo: Use any email/password to sign in
-          </p>
         </form>
       </div>
     </div>
