@@ -54,12 +54,12 @@ export default function DashboardPage() {
   if (!username) return null;
 
   return (
-    <div className="flex flex-col h-screen" style={{ background: '#080c10' }}>
+    <div className="flex flex-col h-screen" style={{ background: '#ffffff' }}>
       {/* Ticker Bar */}
-      <div className="overflow-hidden whitespace-nowrap" style={{ background: '#0d1117', borderBottom: '1px solid #1e2d3d', height: '28px', lineHeight: '28px' }}>
+      <div className="overflow-hidden whitespace-nowrap" style={{ background: '#b71c1c', height: '28px', lineHeight: '28px' }}>
         <div className="inline-block animate-ticker">
           {[...tickerItems, ...tickerItems].map((item, i) => (
-            <span key={i} className="text-xs font-mono mx-6" style={{ color: item.includes('\u25B2') ? '#00ff88' : item.includes('\u25BC') ? '#ff4444' : '#7a8fa6' }}>
+            <span key={i} className="text-xs font-mono mx-6" style={{ color: item.includes('\u25B2') ? '#a5d6a7' : item.includes('\u25BC') ? '#ffcdd2' : 'rgba(255,255,255,0.7)' }}>
               {item}
             </span>
           ))}
@@ -67,17 +67,17 @@ export default function DashboardPage() {
       </div>
 
       {/* Header */}
-      <header className="flex items-center px-6 py-3 gap-4" style={{ background: '#0d1117', borderBottom: '1px solid #1e2d3d' }}>
+      <header className="flex items-center px-6 py-3 gap-4" style={{ background: '#f8f8f8', borderBottom: '1px solid #e0e0e0' }}>
         {/* Logo */}
         <div className="flex items-center gap-3 mr-4">
-          <div className="w-8 h-8 flex items-center justify-center" style={{ border: '2px solid #00d4ff', borderRadius: '4px' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="2.5" strokeLinecap="round">
+          <div className="w-8 h-8 flex items-center justify-center" style={{ border: '2px solid #c62828', borderRadius: '4px' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c62828" strokeWidth="2.5" strokeLinecap="round">
               <path d="M3 3h18v18H3z" />
               <path d="M3 9h18" />
               <path d="M9 3v18" />
             </svg>
           </div>
-          <span className="text-lg font-bold font-mono" style={{ color: '#00d4ff' }}>LotIQ</span>
+          <span className="text-lg font-bold font-mono" style={{ color: '#c62828' }}>LotIQ</span>
         </div>
 
         {/* Alert Boxes */}
@@ -85,32 +85,32 @@ export default function DashboardPage() {
           <button
             onClick={() => setTab('inventory')}
             className="flex items-center gap-2 px-3 py-1.5 transition-all"
-            style={{ background: 'rgba(255,184,0,0.08)', border: '1px solid rgba(255,184,0,0.25)', borderRadius: '4px' }}
-            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,184,0,0.15)'}
-            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,184,0,0.08)'}
+            style={{ background: 'rgba(230,81,0,0.08)', border: '1px solid rgba(230,81,0,0.25)', borderRadius: '4px' }}
+            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(230,81,0,0.15)'}
+            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(230,81,0,0.08)'}
           >
-            <span className="text-lg font-bold font-mono" style={{ color: '#ffb800' }}>{needsAttentionCount}</span>
-            <span className="text-xs font-mono uppercase" style={{ color: '#ffb800' }}>Needs Attention</span>
+            <span className="text-lg font-bold font-mono" style={{ color: '#e65100' }}>{needsAttentionCount}</span>
+            <span className="text-xs font-mono uppercase" style={{ color: '#e65100' }}>Needs Attention</span>
           </button>
           <button
             onClick={() => setTab('pricing')}
             className="flex items-center gap-2 px-3 py-1.5 transition-all"
-            style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.25)', borderRadius: '4px' }}
-            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(0,212,255,0.15)'}
-            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(0,212,255,0.08)'}
+            style={{ background: 'rgba(198,40,40,0.08)', border: '1px solid rgba(198,40,40,0.25)', borderRadius: '4px' }}
+            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(198,40,40,0.15)'}
+            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(198,40,40,0.08)'}
           >
-            <span className="text-lg font-bold font-mono" style={{ color: '#00d4ff' }}>{belowMarketCount}</span>
-            <span className="text-xs font-mono uppercase" style={{ color: '#00d4ff' }}>Market Opportunities</span>
+            <span className="text-lg font-bold font-mono" style={{ color: '#c62828' }}>{belowMarketCount}</span>
+            <span className="text-xs font-mono uppercase" style={{ color: '#c62828' }}>Market Opportunities</span>
           </button>
           <button
             onClick={() => setTab('inventory')}
             className="flex items-center gap-2 px-3 py-1.5 transition-all"
-            style={{ background: 'rgba(255,68,68,0.08)', border: '1px solid rgba(255,68,68,0.25)', borderRadius: '4px' }}
-            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,68,68,0.15)'}
-            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,68,68,0.08)'}
+            style={{ background: 'rgba(183,28,28,0.08)', border: '1px solid rgba(183,28,28,0.25)', borderRadius: '4px' }}
+            onMouseOver={e => (e.currentTarget as HTMLElement).style.background = 'rgba(183,28,28,0.15)'}
+            onMouseOut={e => (e.currentTarget as HTMLElement).style.background = 'rgba(183,28,28,0.08)'}
           >
-            <span className="text-lg font-bold font-mono" style={{ color: '#ff4444' }}>{missingDataCount}</span>
-            <span className="text-xs font-mono uppercase" style={{ color: '#ff4444' }}>Missing Data</span>
+            <span className="text-lg font-bold font-mono" style={{ color: '#b71c1c' }}>{missingDataCount}</span>
+            <span className="text-xs font-mono uppercase" style={{ color: '#b71c1c' }}>Missing Data</span>
           </button>
         </div>
 
@@ -122,9 +122,9 @@ export default function DashboardPage() {
               onClick={() => setTab(t.id)}
               className="px-4 py-1.5 text-xs font-mono font-semibold uppercase tracking-wider transition-all"
               style={{
-                background: tab === t.id ? 'rgba(0,212,255,0.1)' : 'transparent',
-                color: tab === t.id ? '#00d4ff' : '#7a8fa6',
-                borderBottom: tab === t.id ? '2px solid #00d4ff' : '2px solid transparent',
+                background: tab === t.id ? 'rgba(198,40,40,0.1)' : 'transparent',
+                color: tab === t.id ? '#c62828' : '#757575',
+                borderBottom: tab === t.id ? '2px solid #c62828' : '2px solid transparent',
               }}
             >
               {t.label}
@@ -134,12 +134,12 @@ export default function DashboardPage() {
 
         {/* User + Sign Out */}
         <div className="flex items-center gap-4">
-          <span className="text-xs font-mono" style={{ color: '#7a8fa6' }}>{username}</span>
+          <span className="text-xs font-mono" style={{ color: '#757575' }}>{username}</span>
           <button
             onClick={handleSignOut}
             className="text-xs font-mono px-3 py-1 transition-all"
-            style={{ color: '#ff4444', border: '1px solid rgba(255,68,68,0.3)', borderRadius: '4px', background: 'transparent' }}
-            onMouseOver={e => (e.target as HTMLElement).style.background = 'rgba(255,68,68,0.1)'}
+            style={{ color: '#c62828', border: '1px solid rgba(198,40,40,0.3)', borderRadius: '4px', background: 'transparent' }}
+            onMouseOver={e => (e.target as HTMLElement).style.background = 'rgba(198,40,40,0.1)'}
             onMouseOut={e => (e.target as HTMLElement).style.background = 'transparent'}
           >
             SIGN OUT

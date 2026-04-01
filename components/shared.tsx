@@ -53,11 +53,11 @@ export function formatPrice(n: number): string {
 
 export function classColor(cls: string): { bg: string; text: string } {
   switch (cls) {
-    case 'Class A': return { bg: 'rgba(59,130,246,0.15)', text: '#60a5fa' };
-    case 'Class B': return { bg: 'rgba(0,212,255,0.15)', text: '#00d4ff' };
-    case 'Class C': return { bg: 'rgba(20,184,166,0.15)', text: '#2dd4bf' };
-    case '5th Wheel': return { bg: 'rgba(255,184,0,0.15)', text: '#ffb800' };
-    case 'Travel Trailer': return { bg: 'rgba(0,255,136,0.15)', text: '#00ff88' };
-    default: return { bg: 'rgba(122,143,166,0.15)', text: '#7a8fa6' };
+    case 'Class A': return { bg: 'rgba(198,40,40,0.1)', text: '#c62828' };
+    case 'Class B': return { bg: 'rgba(183,28,28,0.1)', text: '#b71c1c' };
+    case 'Class C': return { bg: 'rgba(229,57,53,0.1)', text: '#e53935' };
+    case '5th Wheel': return { bg: 'rgba(230,81,0,0.1)', text: '#e65100' };
+    case 'Travel Trailer': return { bg: 'rgba(46,125,50,0.1)', text: '#2e7d32' };
+    default: return { bg: 'rgba(117,117,117,0.1)', text: '#757575' };
   }
 }

@@ -5,15 +5,17 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg: #080c10;
-  --card: #0d1117;
-  --border: #1e2d3d;
-  --accent: #00d4ff;
-  --green: #00ff88;
-  --amber: #ffb800;
-  --red: #ff4444;
-  --text: #c9d4e0;
-  --muted: #7a8fa6;
+  --bg: #ffffff;
+  --card: #f8f8f8;
+  --border: #e0e0e0;
+  --accent: #c62828;
+  --accent-light: #e53935;
+  --accent-dark: #b71c1c;
+  --green: #2e7d32;
+  --amber: #e65100;
+  --red: #c62828;
+  --text: #1a1a1a;
+  --muted: #757575;
 }
 
 @layer base {
@@ -25,8 +27,8 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    background: rgba(0, 212, 255, 0.2);
-    color: #fff;
+    background: rgba(198, 40, 40, 0.2);
+    color: #1a1a1a;
   }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
